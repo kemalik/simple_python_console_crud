@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # coding:utf-8
 
-from data import *
 from functions import *
 
 
