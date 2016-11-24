@@ -2,7 +2,7 @@
 # coding:utf-8
 
 translits = {
-    'id': 'id',
+    'id': u'id',
     'make': u'Марка',
     'model': u'Модель',
     'year': u'Год выпуска'
@@ -29,6 +29,13 @@ def print_to_console(records=None):
         print u'Нет записей'
 
 
+def get_next_id():
+    if len(cars):
+        max_id = int(max(i['id'] for i in cars))
+        return str(max_id + 1)
+    return 0
+
+
 def create_record(records=None):
     make = raw_input(u'Введите марку машины')
     model = raw_input(u'Введите модель машины')
@@ -38,7 +45,7 @@ def create_record(records=None):
             print u'Машина {make} {model} {year} года уже есть в базе'
             return
     records.append({
-        'id': 1,
+        'id': get_next_id(),
         'make': make,
         'model': model,
         'year': year
