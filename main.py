@@ -1,6 +1,15 @@
 #!/usr/bin/python
 # coding:utf-8
 
+MAIN_MENU = u'''
+0 - выйти
+1 - показать записи
+2 - добавить запись
+3 - Удалить запись
+4 - Изменить запись
+
+Выберите действие: '''
+
 translits = {
     'id': u'id',
     'make': u'Марка',
@@ -15,16 +24,49 @@ cars = [
     {'id': '4', 'make': 'Toyota', 'model': 'Camry', 'year': '2015'},
 ]
 
+spaces = {
+    'id': 2,
+    'make': 2,
+    'model': 2,
+    'year': 2
+}
 
-def print_to_console(records=None):
-    if records:
-        print "===================================="
-        print u'| id | Марка | Модель | Год выпкска |'
+
+def get_spaces():
+    for record in cars:
+        for key, value in record.items():
+            value_length = len(value)
+            translit_length = len(translits[key])
+
+            if spaces[key] < value_length or spaces[key] < translit_length:
+                if value_length > translit_length:
+                    spaces[key] = value_length
+                else:
+                    spaces[key] = translit_length
+    return spaces
+
+
+def print_to_console():
+    if cars:
+        print "=============================================="
+        spaces = get_spaces()
+        print u'| id | Марка{make_space}| Модель{model_space}| Год выпкска{year_space}|'.format(
+            make_space=' '*(spaces['make']-len(translits['make'])+1),
+            model_space=' '*(spaces['model']-len(translits['model'])+1),
+            year_space=' '*(spaces['year']-len(translits['year'])+1),
+        )
         for car in cars:
+            id_space = ' ' * (spaces['id']-len(car['id']))
+            make_space = ' ' * (spaces['make']-len(car['make']))
+            model_space = ' ' * (spaces['model']-len(car['model']))
+            year_space = ' ' * (spaces['year']-len(car['year']))
             print u'| {id} | {make} | {model} | {year} |'.format(
-                id=car['id'], make=car['make'], model=car['model'], year=car['year']
+                id=car['id']+id_space,
+                make=car['make']+make_space,
+                model=car['model']+model_space,
+                year=car['year']+year_space
             )
-        print "===================================="
+        print "=============================================="
     else:
         print u'Нет записей'
 
@@ -36,43 +78,33 @@ def get_next_id():
     return 0
 
 
-def create_record(records=None):
+# ==================== CREATE ====================
+def create_record():
     make = raw_input(u'Введите марку машины')
     model = raw_input(u'Введите модель машины')
     year = raw_input(u'Введите год выпуска машины')
-    for record in records:
+    for record in cars:
         if set([make, model, year]).issubset(record.values()):
             print u'Машина {make} {model} {year} года уже есть в базе'
             return
-    records.append({
-        'id': get_next_id(),
-        'make': make,
-        'model': model,
-        'year': year
-    })
-    print u'Запись успешно добавлена'
-
-
-def delete_record(records=None):
-    if records:
-        print_to_console(records)
-        record_id = raw_input(u'Введите id записи')
-        for record in records:
-            if record['id'] == record_id:
-                records.remove(record)
-                print u'Запись успешно удалена'
-                break
-        else:
-            print u'Запись с таким id не найдена'
+    if make and model and year:
+        cars.append({
+            'id': get_next_id(),
+            'make': make,
+            'model': model,
+            'year': year
+        })
+        print u'Запись успешно добавлена'
     else:
-        print u'Нет записей'
+        print u'Вы ввели пустые значения'
 
 
-def update_record(records=None):
-    if records:
-        print_to_console(records)
+# ==================== UPDATE ====================
+def update_record():
+    if cars:
+        print_to_console()
         record_id = raw_input(u'Введите id записи')
-        for record in records:
+        for record in cars:
             if record['id'] == record_id:
                 for key, value in record.items():
                     if key == 'id':
@@ -91,19 +123,36 @@ def update_record(records=None):
     else:
         print u'Нет записей'
 
+# ==================== DELETE ====================
+def delete_record():
+    if cars:
+        print_to_console()
+        record_id = raw_input(u'Введите id записи')
+        for record in cars:
+            if record['id'] == record_id:
+                cars.remove(record)
+                print u'Запись успешно удалена'
+                break
+        else:
+            print u'Запись с таким id не найдена'
+    else:
+        print u'Нет записей'
 
+
+# ==================== MAIN ====================
 def main():
-    action = 1
-    while action != 0:
-        action = raw_input(u'0 - выйти\n1 - показать записи\n2 - добавить запись\n3 - Удалить запись\n4 - Изменить запись\n\nВыберите действие: ')
+    while True:
+        action = raw_input(MAIN_MENU)
         if action == '1':
-            print_to_console(cars)
+            print_to_console()
         elif action == '2':
-            create_record(cars)
+            create_record()
         elif action == '3':
-            delete_record(cars)
+            delete_record()
         elif action == '4':
-            update_record(cars)
+            update_record()
+        elif action == '0':
+            break
         else:
             print u'Нет действия на {action}'.format(action=action)
 
