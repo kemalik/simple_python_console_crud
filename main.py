@@ -38,16 +38,28 @@ def create_record(records=None):
     print u'Запись успешно добавлена'
 
 
+def delete_record(records=None):
+    print_to_console(records)
+    record_id = raw_input(u'Введите id записи')
+    for record in records:
+        if record['id'] == record_id:
+            records.remove(record)
+            print u'Запись успешно удалена'
+            break
+    else:
+        print u'Запись с таким id не найдена'
 
 
 def main():
     action = 1
     while action != 0:
-        action = raw_input(u'0 - выйти\n1 - показать записи\n2 - добавить запись\n\nВыберите действие: ')
+        action = raw_input(u'0 - выйти\n1 - показать записи\n2 - добавить запись\n3 - Удалить запись\n\nВыберите действие: ')
         if action == '1':
             print_to_console(cars)
         elif action == '2':
             create_record(cars)
+        elif action == '3':
+            delete_record(cars)
         else:
             break
 
