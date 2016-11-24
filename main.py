@@ -39,16 +39,18 @@ def create_record(records=None):
 
 
 def delete_record(records=None):
-    print_to_console(records)
-    record_id = raw_input(u'Введите id записи')
-    for record in records:
-        if record['id'] == record_id:
-            records.remove(record)
-            print u'Запись успешно удалена'
-            break
+    if records:
+        print_to_console(records)
+        record_id = raw_input(u'Введите id записи')
+        for record in records:
+            if record['id'] == record_id:
+                records.remove(record)
+                print u'Запись успешно удалена'
+                break
+        else:
+            print u'Запись с таким id не найдена'
     else:
-        print u'Запись с таким id не найдена'
-
+        print u'Нет записей'
 
 def main():
     action = 1
@@ -61,7 +63,7 @@ def main():
         elif action == '3':
             delete_record(cars)
         else:
-            break
+            print u'Нет действия на {action}'.format(action=action)
 
 
 if __name__ == '__main__':
